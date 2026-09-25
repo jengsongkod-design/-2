@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คลังเจ๋งแจ๋ว | เงินทุนธุรกิจ</title>
+<style>
+:root{
+  --red:#8d1020; --red2:#c51f32; --deep:#24070b; --gold:#f4c95d;
+  --cream:#fff2c7; --bg:#120507; --panel:#21090d; --line:#6f1c25;
+  --green:#32c47c; --danger:#ef5364; --muted:#d2aeb2;
+}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Thai",sans-serif;background:
+radial-gradient(circle at 20% 0%,#5d101a 0,#180608 35%,#0d0305 100%);color:#fff8e4}
+button,input,select{font:inherit} button{cursor:pointer}
+.app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+.sidebar{background:linear-gradient(180deg,#28080d,#120406);border-right:1px solid #7d1c27;padding:18px;position:sticky;top:0;height:100vh}
+.brand{padding:10px 8px 22px;border-bottom:1px solid #65202a;margin-bottom:18px}
+.brand h1{margin:0;color:var(--gold);font-size:28px}.brand p{margin:5px 0 0;color:#e9c9a0;font-size:12px}
+.nav{display:grid;gap:8px}.nav button{border:1px solid transparent;background:transparent;color:#f9e8d0;padding:13px;border-radius:10px;text-align:left}
+.nav button:hover,.nav button.active{background:linear-gradient(90deg,#a41427,#5c0d17);border-color:#c42a3b}
+.main{min-width:0}.top{padding:22px 28px 10px;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.top h2{margin:0;font-size:25px}.top p{margin:4px 0;color:var(--muted);font-size:13px}
+.user{border:1px solid #6d1d27;background:#1c070b;border-radius:14px;padding:9px 14px;color:#ffe8bd}
+.content{padding:14px 28px 35px;max-width:1450px;margin:auto}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:linear-gradient(145deg,#3a0d13,#1d070a);border:1px solid #8e2633;border-radius:16px;padding:18px;box-shadow:0 10px 35px #0006}
+.card small{color:#dfbfc0}.value{font-size:28px;font-weight:800;margin:7px 0}.gold{color:var(--gold)}.green{color:var(--green)}.red{color:#ff6573}
+.grid{display:grid;grid-template-columns:1.7fr 1fr;gap:16px;margin-top:16px}.panel{background:#190609cc;border:1px solid #6f1c25;border-radius:16px;padding:18px}.panel h3{margin:0 0 15px}
+.chart{height:220px;display:flex;align-items:end;gap:12px;border-left:1px solid #60202a;border-bottom:1px solid #60202a;padding:12px 10px 0}
+.barwrap{height:100%;flex:1;display:flex;align-items:end;gap:3px}.bar{flex:1;border-radius:5px 5px 0 0;min-height:3px}.income{background:#29bf78}.expense{background:#ef5364}.profit{background:var(--gold)}
+.legend{display:flex;gap:16px;color:#d7bdbd;font-size:12px;margin-top:10px}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:10px}.quick button{padding:14px;border-radius:11px;border:1px solid #8f2632;background:#5c0d17;color:#fff}.quick button:nth-child(2){background:#8b6413}.quick button:nth-child(3){background:#4e1720}.quick button:nth-child(4){background:#241018}
+.tablepanel{margin-top:16px}.toolbar{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px}.toolbar input,.toolbar select,.form input,.form select{background:#120407;border:1px solid #71303a;color:white;padding:10px;border-radius:9px;outline:none}.toolbar input{min-width:240px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:12px 8px;border-bottom:1px solid #4c1921;text-align:left}th{color:#e5bd69;background:#300a10}td{color:#f5e8d8}.badge{padding:5px 8px;border-radius:20px;font-size:11px}.sold{background:#104e32;color:#8dffc2}.stock{background:#64101c;color:#ffadb5}
+.actions button{border:0;background:none;color:#f4c95d;margin-right:5px}.empty{text-align:center;padding:28px;color:#a98d90}
+.modal{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:18px;z-index:5}.modal.show{display:flex}.dialog{width:min(560px,100%);background:#22080d;border:1px solid #a52b39;border-radius:18px;padding:22px;box-shadow:0 20px 80px #000}
+.form{display:grid;gap:12px}.form label{font-size:13px;color:#e6caca}.form input,.form select{width:100%;margin-top:5px}.formrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}.dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.primary{background:#c31d32!important;color:white!important;border:0!important;padding:11px 18px;border-radius:9px}.secondary{background:#351016!important;color:#f5dfbf!important;border:1px solid #74303a!important;padding:11px 18px;border-radius:9px}
+.toast{position:fixed;right:20px;bottom:20px;background:#291015;border:1px solid #9b3040;padding:12px 16px;border-radius:10px;display:none;z-index:10}.toast.show{display:block}
+@media(max-width:950px){.app{grid-template-columns:1fr}.sidebar{height:auto;position:static}.nav{grid-template-columns:repeat(4,1fr)}.nav button{font-size:11px}.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}}
+@media(max-width:600px){.top,.content{padding-left:14px;padding-right:14px}.nav{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:1fr}.formrow{grid-template-columns:1fr}.tablepanel{overflow:auto}table{min-width:800px}.quick{grid-template-columns:1fr}}
+
+.category-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:7px}
+.category-chip{border:1px solid #71303a;background:#160508;color:#e8d3c4;padding:8px 12px;border-radius:999px}
+.category-chip.selected{background:#a91529;border-color:#f4c95d;color:#fff3c9;box-shadow:0 0 0 1px #f4c95d55}
+.capital-edit{display:flex;gap:8px;align-items:center;margin-top:10px}
+.capital-edit input{flex:1;background:#120407;border:1px solid #71303a;color:white;padding:9px;border-radius:9px}
+.filterbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.filterbar button{border:1px solid #71303a;background:#21080d;color:#ead3c1;padding:7px 11px;border-radius:999px}
+.filterbar button.active{background:#b31b30;color:#fff;border-color:#f4c95d}
+
+/* ===== Custom theme / animated background ===== */
+body::before, body::after{content:"";position:fixed;inset:auto;z-index:-1;pointer-events:none}
+body::before{width:420px;height:420px;left:-120px;top:8%;background:radial-gradient(circle,#c51f3244 0,#c51f3200 70%);animation:floatGlow 9s ease-in-out infinite}
+body::after{width:500px;height:500px;right:-180px;bottom:0;background:radial-gradient(circle,#f4c95d22 0,#f4c95d00 70%);animation:floatGlow 12s ease-in-out infinite reverse}
+@keyframes floatGlow{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-25px) scale(1.12)}}
+.animated-decor{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
+.lantern{position:absolute;font-size:42px;opacity:.18;animation:swing 5s ease-in-out infinite}
+.l1{left:18%;top:8%}.l2{right:18%;top:20%;font-size:34px;animation-delay:1.5s}.l3{left:55%;bottom:8%;font-size:30px;animation-delay:2.5s}
+@keyframes swing{0%,100%{transform:rotate(-6deg) translateY(0)}50%{transform:rotate(6deg) translateY(15px)}}
+.brand-head{display:flex;align-items:center;gap:10px}
+.shop-logo{width:52px;height:52px;border-radius:14px;object-fit:cover;border:2px solid var(--gold);background:#4a0d15}
+.logo-upload{font-size:11px;color:#e6c7a0}
+.profile-preview{width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);display:block;margin:auto;background:#4a0d15}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.settings-card{background:#190609;border:1px solid #6f1c25;border-radius:14px;padding:16px}
+.settings-card input,.settings-card select{width:100%;margin-top:6px;background:#120407;border:1px solid #71303a;color:white;padding:10px;border-radius:9px}
+.category-manage{display:flex;gap:8px;margin-top:8px}
+.category-list{display:grid;gap:7px;margin-top:10px}
+.category-row{display:flex;justify-content:space-between;align-items:center;background:#2b0b10;border:1px solid #4d1720;padding:9px 11px;border-radius:9px}
+.category-row button{background:none;border:0;color:#ff9aa5}
+.theme-swatches{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.swatch{width:30px;height:30px;border-radius:50%;border:2px solid #fff4;cursor:pointer}
+.swatch.active{outline:2px solid var(--gold);outline-offset:2px}
+@media(max-width:700px){.settings-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="animated-decor"><span class="lantern l1">🏮</span><span class="lantern l2">🏮</span><span class="lantern l3">🐉</span></div>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">
+  <div class="brand-head">
+    <img id="shopLogo" class="shop-logo" alt="โลโก้ร้าน">
+    <div><h1 id="shopName">คลังเจ๋งแจ๋ว</h1><p>ระบบบริหารเงินทุนธุรกิจ</p></div>
+  </div>
+</div>
+  <div class="nav">
+    <button class="active" onclick="scrollToTop()">🏮 หน้าหลัก</button>
+    <button onclick="openProductModal()">🎮 เพิ่มสินค้า / ไอดีเกม</button>
+    <button onclick="openMoneyModal('income')">💰 บันทึกรายรับ</button>
+    <button onclick="openMoneyModal('expense')">🧾 บันทึกรายจ่าย</button>
+    <button onclick="showReport()">📊 สรุปผล</button>
+    <button onclick="openSettings()">⚙️ ตั้งค่าร้าน</button>
+    <button onclick="clearAllData()">♻️ รีเซ็ตข้อมูล</button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="top">
+  <div><h2>เงินทุนธุรกิจ</h2><p>บริหารเงิน • คุมต้นทุน • ติดตามกำไร</p></div>
+  <div class="user">👑 <span id="ownerName">ทรงกรด ขอกลาง</span><br><small>เจ้าของร้าน</small></div>
+</header>
+
+<section class="content">
+  <div class="cards">
+    <div class="card">
+  <small>💰 เงินทุนรวม</small>
+  <div class="value gold" id="capital">฿0</div>
+  <small>เงินสด + สินค้าคงเหลือ</small>
+  <div class="capital-edit">
+    <input id="capitalInput" type="number" min="0" placeholder="ตั้งเงินทุน">
+    <button class="primary" onclick="saveCapital()">แก้ไข</button>
+  </div>
+</div>
+    <div class="card"><small>💵 เงินสดคงเหลือ</small><div class="value" id="cash">฿0</div><small>พร้อมนำไปหมุนต่อ</small></div>
+    <div class="card"><small>📦 สินค้าคงเหลือ</small><div class="value" id="stockValue">฿0</div><small id="stockCount">0 รายการ</small></div>
+    <div class="card"><small>📈 กำไรสะสม</small><div class="value green" id="profit">฿0</div><small>จากรายการขาย</small></div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h3>📈 ภาพรวม 7 วันล่าสุด</h3>
+      <div class="chart" id="chart"></div>
+      <div class="legend"><span>🟢 รายรับ</span><span>🔴 รายจ่าย</span><span>🟡 กำไร</span></div>
+    </div>
+    <div class="panel">
+      <h3>⚡ เมนูลัด</h3>
+      <div class="quick">
+        <button onclick="openProductModal()">➕ เพิ่มไอดีเกม</button>
+        <button onclick="openMoneyModal('income')">💰 บันทึกรายรับ</button>
+        <button onclick="openMoneyModal('expense')">🧾 บันทึกรายจ่าย</button>
+        <button onclick="showReport()">📊 ดูรายงาน</button>
+      </div>
+      <div style="margin-top:18px;padding:14px;background:#2b0b10;border-radius:10px;color:#e8c7a5;font-size:13px">
+        🐲 เคล็ดลับ: แยกเงินทุนออกจากเงินส่วนตัว และบันทึกต้นทุนทุกครั้งก่อนขาย
+      </div>
+    </div>
+  </div>
+
+  <div class="panel tablepanel">
+    <div class="toolbar">
+      <h3 style="margin:0">🎮 รายการสินค้า / ไอดีเกม</h3>
+      <div><input id="search" placeholder="ค้นหาเกม / รหัสไอดี..." oninput="render()">
+      <button class="primary" onclick="openProductModal()">+ เพิ่มรายการ</button></div>
+    </div>
+    <div class="filterbar" id="categoryFilters"></div>
+    <div style="overflow:auto">
+    <table><thead><tr><th>รหัส</th><th>เกม</th><th>ชื่อไอดี</th><th>ราคาทุน</th><th>ราคาขาย</th><th>กำไร</th><th>สถานะ</th><th>วันที่</th><th>จัดการ</th></tr></thead>
+    <tbody id="productTable"></tbody></table>
+    </div>
+  </div>
+</section>
+</main>
+</div>
+
+<div class="modal" id="productModal"><div class="dialog">
+<h3 id="productTitle">➕ เพิ่มสินค้า / ไอดีเกม</h3>
+<div class="form">
+<input type="hidden" id="editId">
+<div class="formrow"><label>รหัสไอดี<input id="pid" placeholder="เช่น EFO-001"></label><label>เกม<input id="game" placeholder="เช่น eFootball"></label></div>
+<label>หมวดหมู่ — กดเลือกได้</label>
+<div class="category-chips" id="modalCategories"></div>
+<input type="hidden" id="category" value="eFootball">
+<label>ชื่อ/รายละเอียดไอดี<input id="pname" placeholder="เช่น ID 5 ดาว ไทย"></label>
+<div class="formrow"><label>ราคาทุน<input id="cost" type="number" min="0" placeholder="0"></label><label>ราคาขาย<input id="sell" type="number" min="0" placeholder="ยังไม่ขาย"></label></div>
+<label>สถานะ<select id="status"><option value="stock">ยังไม่ขาย</option><option value="sold">ขายแล้ว</option></select></label>
+</div>
+<div class="dialog-actions"><button class="secondary" onclick="closeModal('productModal')">ยกเลิก</button><button class="primary" onclick="saveProduct()">บันทึก</button></div>
+</div></div>
+
+<div class="modal" id="moneyModal"><div class="dialog">
+<h3 id="moneyTitle">💰 บันทึกรายรับ</h3>
+<div class="form"><label>รายการ<input id="mname" placeholder="เช่น ขายไอดี eFootball"></label><label>จำนวนเงิน<input id="mamount" type="number" min="0" placeholder="0"></label><label>หมายเหตุ<input id="mnote" placeholder="รายละเอียดเพิ่มเติม"></label></div>
+<div class="dialog-actions"><button class="secondary" onclick="closeModal('moneyModal')">ยกเลิก</button><button class="primary" onclick="saveMoney()">บันทึก</button></div>
+</div></div>
+
+<div class="modal" id="settingsModal"><div class="dialog" style="max-width:760px">
+<h3>⚙️ ตั้งค่าร้านและหน้าตาเว็บไซต์</h3>
+<div class="settings-grid">
+  <div class="settings-card">
+    <h4 style="margin-top:0">🏪 ข้อมูลร้าน</h4>
+    <label>ชื่อร้าน<input id="shopNameInput" placeholder="ชื่อร้าน"></label>
+    <label style="display:block;margin-top:10px">ชื่อเจ้าของ<input id="ownerNameInput" placeholder="ชื่อเจ้าของ"></label>
+    <label style="display:block;margin-top:10px">โลโก้ / รูปโปรไฟล์<input id="logoFile" type="file" accept="image/*" onchange="previewLogo(event)"></label>
+    <img id="profilePreview" class="profile-preview" alt="ตัวอย่างโลโก้" style="margin-top:12px">
+  </div>
+  <div class="settings-card">
+    <h4 style="margin-top:0">🎨 เปลี่ยนธีม</h4>
+    <p style="font-size:12px;color:#d2aeb2">เลือกสีหลักของร้าน</p>
+    <div class="theme-swatches">
+      <button class="swatch" style="background:#8d1020" onclick="setTheme('#8d1020','#c51f32','#f4c95d')"></button>
+      <button class="swatch" style="background:#174d3a" onclick="setTheme('#174d3a','#238b67','#e5c76b')"></button>
+      <button class="swatch" style="background:#183a72" onclick="setTheme('#183a72','#2864b8','#f4c95d')"></button>
+      <button class="swatch" style="background:#4b2577" onclick="setTheme('#4b2577','#783cb5','#f0c7ff')"></button>
+    </div>
+    <h4>🏷️ จัดการหมวดหมู่</h4>
+    <div class="category-manage">
+      <input id="newCategory" placeholder="ชื่อหมวดหมู่ใหม่">
+      <button class="primary" onclick="addCategory()">+ เพิ่ม</button>
+    </div>
+    <div class="category-list" id="categoryList"></div>
+  </div>
+</div>
+<div class="dialog-actions"><button class="secondary" onclick="closeModal('settingsModal')">ปิด</button><button class="primary" onclick="saveSettings()">บันทึกการตั้งค่า</button></div>
+</div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY='khlangJengJaewBusinessFundV1';
+let selectedCategory='all';
+let tempLogo='';
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||{
+  initialCapital:10000,
+  shopName:'คลังเจ๋งแจ๋ว',
+  ownerName:'ทรงกรด ขอกลาง',
+  logo:'',
+  theme:{red:'#8d1020',red2:'#c51f32',gold:'#f4c95d'},
+  categories:['eFootball','RoV','Free Fire','อื่นๆ'],
+  products:[
+    {id:'EFO-001',game:'eFootball',category:'eFootball',name:'ID 5 ดาว (ไทย)',cost:1150,sell:1499,status:'sold',date:'2026-09-20'},
+    {id:'ROV-002',game:'RoV',category:'RoV',name:'สกินเยอะ (VIP)',cost:800,sell:899,status:'sold',date:'2026-09-18'},
+    {id:'FF-003',game:'Free Fire',category:'Free Fire',name:'ไอดีเทพ',cost:650,sell:0,status:'stock',date:'2026-09-22'}
+  ],
+  money:[]
+};
+
+if(!state.shopName) state.shopName='คลังเจ๋งแจ๋ว';
+if(!state.ownerName) state.ownerName='ทรงกรด ขอกลาง';
+if(!state.logo) state.logo='';
+if(!state.theme) state.theme={red:'#8d1020',red2:'#c51f32',gold:'#f4c95d'};
+if(!state.categories) state.categories=['eFootball','RoV','Free Fire','อื่นๆ'];
+function persist(){state.products.forEach(x=>{if(!x.category)x.category=x.game||'อื่นๆ'});localStorage.setItem(KEY,JSON.stringify(state));}
+function baht(n){return new Intl.NumberFormat('th-TH',{style:'currency',currency:'THB',maximumFractionDigits:0}).format(n||0)}
+function soldProfit(){return state.products.filter(x=>x.status==='sold').reduce((a,x)=>a+(+x.sell||0)-(+x.cost||0),0)}
+function stockValue(){return state.products.filter(x=>x.status==='stock').reduce((a,x)=>a+(+x.cost||0),0)}
+function cash(){let c=state.initialCapital+soldProfit()-stockValue(); state.money.forEach(x=>c+=x.type==='income'?+x.amount:-x.amount); return c}
+function capital(){return cash()+stockValue()}
+function render(){
+ applySettings();
+ document.getElementById('shopName').textContent=state.shopName;
+ document.getElementById('ownerName').textContent=state.ownerName;
+ document.getElementById('capital').textContent=baht(capital());
+ document.getElementById('capitalInput').value=state.initialCapital;
+ document.getElementById('cash').textContent=baht(cash());
+ document.getElementById('stockValue').textContent=baht(stockValue());
+ document.getElementById('stockCount').textContent=state.products.filter(x=>x.status==='stock').length+' รายการ';
+ document.getElementById('profit').textContent=baht(soldProfit());
+ const q=(document.getElementById('search').value||'').toLowerCase();
+ const rows=state.products.filter(x=>{
+   const text=(x.id+x.game+x.name+(x.category||x.game)).toLowerCase();
+   const cat=(x.category||x.game);
+   return text.includes(q) && (selectedCategory==='all' || cat===selectedCategory);
+ });
+ document.getElementById('productTable').innerHTML=rows.length?rows.map((x,i)=>`<tr>
+<td>${x.id}</td><td>${x.category||x.game}</td><td>${x.name}</td><td>${baht(x.cost)}</td><td>${x.sell?baht(x.sell):'-'}</td>
+<td class="${x.status==='sold'&&x.sell-x.cost>=0?'green':'red'}">${x.status==='sold'?baht(x.sell-x.cost):'-'}</td>
+<td><span class="badge ${x.status}">${x.status==='sold'?'ขายแล้ว':'ยังไม่ขาย'}</span></td><td>${x.date}</td>
+<td class="actions"><button onclick="editProduct('${x.id}')">✏️</button><button onclick="deleteProduct('${x.id}')">🗑️</button></td></tr>`).join(''):`<tr><td colspan="9" class="empty">ยังไม่มีรายการ</td></tr>`;
+ renderChart();
+ renderCategoryManager();
+}
+function renderChart(){
+ const el=document.getElementById('chart'); const days=[];
+ for(let i=6;i>=0;i--){let d=new Date();d.setDate(d.getDate()-i);let s=d.toISOString().slice(0,10);
+ let income=state.products.filter(x=>x.status==='sold'&&x.date===s).reduce((a,x)=>a+(+x.sell||0),0)+state.money.filter(x=>x.type==='income'&&x.date===s).reduce((a,x)=>a+x.amount,0);
+ let expense=state.products.filter(x=>x.date===s).reduce((a,x)=>a+(+x.cost||0),0)+state.money.filter(x=>x.type==='expense'&&x.date===s).reduce((a,x)=>a+x.amount,0);
+ days.push({s,income,expense,profit:Math.max(0,income-expense)});}
+ const max=Math.max(500,...days.flatMap(x=>[x.income,x.expense,x.profit]));
+ el.innerHTML=days.map(x=>`<div class="barwrap" title="${x.s}"><div class="bar income" style="height:${x.income/max*90}%"></div><div class="bar expense" style="height:${x.expense/max*90}%"></div><div class="bar profit" style="height:${x.profit/max*90}%"></div></div>`).join('');
+}
+function chooseGame(cat){
+ document.getElementById('category').value=cat;
+ const game=document.getElementById('game');
+ if(!game.value || state.categories.includes(game.value)) game.value=cat;
+ document.querySelectorAll('[data-modal-cat]').forEach(b=>b.classList.toggle('selected',b.dataset.modalCat===cat));
+}
+function setCategory(cat){
+ selectedCategory=cat;
+ document.querySelectorAll('#categoryFilters button').forEach(b=>b.classList.toggle('active',b.dataset.cat===cat));
+ render();
+}
+function saveCapital(){
+ const n=+document.getElementById('capitalInput').value;
+ if(n<0 || !Number.isFinite(n)) return alert('กรุณาใส่จำนวนเงินที่ถูกต้อง');
+ state.initialCapital=n;
+ persist(); render(); toast('แก้ไขเงินทุนเริ่มต้นแล้ว');
+}
+
+function applySettings(){
+ const root=document.documentElement;
+ root.style.setProperty('--red',state.theme.red);
+ root.style.setProperty('--red2',state.theme.red2);
+ root.style.setProperty('--gold',state.theme.gold);
+ document.getElementById('shopName').textContent=state.shopName;
+ const logo=document.getElementById('shopLogo');
+ logo.src=state.logo||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" rx="20" fill="#8d1020"/><text x="50" y="62" text-anchor="middle" font-size="48">🧧</text></svg>');
+}
+function openSettings(){
+ document.getElementById('shopNameInput').value=state.shopName;
+ document.getElementById('ownerNameInput').value=state.ownerName;
+ document.getElementById('profilePreview').src=state.logo||document.getElementById('shopLogo').src;
+ tempLogo=state.logo;
+ renderCategoryManager();
+ document.getElementById('settingsModal').classList.add('show');
+}
+function previewLogo(e){
+ const file=e.target.files&&e.target.files[0]; if(!file)return;
+ const reader=new FileReader();
+ reader.onload=()=>{tempLogo=reader.result;document.getElementById('profilePreview').src=tempLogo};
+ reader.readAsDataURL(file);
+}
+function saveSettings(){
+ state.shopName=document.getElementById('shopNameInput').value.trim()||'คลังเจ๋งแจ๋ว';
+ state.ownerName=document.getElementById('ownerNameInput').value.trim()||'เจ้าของร้าน';
+ state.logo=tempLogo||'';
+ persist(); render(); closeModal('settingsModal'); toast('บันทึกการตั้งค่าร้านแล้ว');
+}
+function setTheme(red,red2,gold){
+ state.theme={red,red2,gold}; applySettings(); persist(); toast('เปลี่ยนธีมแล้ว');
+}
+function renderCategoryManager(){
+ const list=document.getElementById('categoryList');
+ list.innerHTML=state.categories.map((c,i)=>`<div class="category-row"><span>🏷️ ${c}</span>${state.categories.length>1?`<button onclick="removeCategory(${i})">ลบ</button>`:''}</div>`).join('');
+ const filters=document.getElementById('categoryFilters');
+ filters.innerHTML=`<button class="${selectedCategory==='all'?'active':''}" data-cat="all" onclick="setCategory('all')">ทั้งหมด</button>`+
+ state.categories.map(c=>`<button class="${selectedCategory===c?'active':''}" data-cat="${c}" onclick="setCategory('${String(c).replace(/'/g,"\\'")}')">🏷️ ${c}</button>`).join('');
+}
+function addCategory(){
+ const input=document.getElementById('newCategory'); const c=input.value.trim();
+ if(!c)return;
+ if(state.categories.includes(c))return alert('มีหมวดหมู่นี้อยู่แล้ว');
+ state.categories.push(c); input.value=''; persist(); renderCategoryManager(); render(); toast('เพิ่มหมวดหมู่แล้ว');
+}
+function removeCategory(i){
+ const c=state.categories[i];
+ if(!confirm('ลบหมวดหมู่ '+c+' หรือไม่?'))return;
+ state.categories.splice(i,1);
+ if(selectedCategory===c)selectedCategory='all';
+ state.products.forEach(x=>{if(x.category===c)x.category='อื่นๆ'});
+ persist(); renderCategoryManager(); render(); toast('ลบหมวดหมู่แล้ว');
+}
+function renderModalCategories(active='eFootball'){
+ const el=document.getElementById('modalCategories'); if(!el)return;
+ el.innerHTML=state.categories.map(c=>`<button type="button" class="category-chip ${c===active?'selected':''}" data-modal-cat="${c}" onclick="chooseGame('${String(c).replace(/'/g,"\\'")}')">🏷️ ${c}</button>`).join('');
+}
+function openProductModal(){
+ document.getElementById('editId').value='';
+ ['pid','game','pname','cost','sell'].forEach(id=>document.getElementById(id).value='');
+ document.getElementById('status').value='stock';
+ renderModalCategories(state.categories[0]||'อื่นๆ');
+ chooseGame(state.categories[0]||'อื่นๆ');
+ document.getElementById('productTitle').textContent='➕ เพิ่มสินค้า / ไอดีเกม';
+ document.getElementById('productModal').classList.add('show')
+}
+function editProduct(id){
+ let x=state.products.find(p=>p.id===id);if(!x)return;
+ document.getElementById('editId').value=id;document.getElementById('pid').value=x.id;
+ document.getElementById('game').value=x.game;document.getElementById('pname').value=x.name;
+ document.getElementById('cost').value=x.cost;document.getElementById('sell').value=x.sell||'';
+ document.getElementById('status').value=x.status;renderModalCategories(x.category||x.game);chooseGame(x.category||x.game);
+ document.getElementById('productTitle').textContent='✏️ แก้ไขรายการ';
+ document.getElementById('productModal').classList.add('show')
+}
+function saveProduct(){
+ const id=document.getElementById('pid').value.trim();if(!id)return alert('กรุณาใส่รหัสไอดี');
+ const category=document.getElementById('category').value;
+ const data={id,game:document.getElementById('game').value.trim()||category,category,name:document.getElementById('pname').value.trim(),cost:+document.getElementById('cost').value||0,sell:+document.getElementById('sell').value||0,status:document.getElementById('status').value,date:new Date().toISOString().slice(0,10)};
+ const old=document.getElementById('editId').value;
+ if(old){let i=state.products.findIndex(x=>x.id===old);state.products[i]=data}else state.products.unshift(data);
+ persist();render();closeModal('productModal');toast('บันทึกข้อมูลเรียบร้อย');
+}
+function deleteProduct(id){if(confirm('ลบรายการนี้หรือไม่?')){state.products=state.products.filter(x=>x.id!==id);persist();render();toast('ลบรายการแล้ว')}}
+let moneyType='income';
+function openMoneyModal(type){moneyType=type;document.getElementById('moneyTitle').textContent=type==='income'?'💰 บันทึกรายรับ':'🧾 บันทึกรายจ่าย';document.getElementById('mname').value='';document.getElementById('mamount').value='';document.getElementById('mnote').value='';document.getElementById('moneyModal').classList.add('show')}
+function saveMoney(){let amount=+document.getElementById('mamount').value||0;if(!amount)return alert('กรุณาใส่จำนวนเงิน');state.money.push({type:moneyType,name:document.getElementById('mname').value,note:document.getElementById('mnote').value,amount,date:new Date().toISOString().slice(0,10)});persist();render();closeModal('moneyModal');toast('บันทึกรายการแล้ว')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function toast(t){let x=document.getElementById('toast');x.textContent='✓ '+t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),1800)}
+function showReport(){alert(`สรุปธุรกิจ\\n\\nเงินทุนรวม: ${baht(capital())}\\nเงินสด: ${baht(cash())}\\nสินค้าคงเหลือ: ${baht(stockValue())}\\nกำไรสะสม: ${baht(soldProfit())}\\nสินค้าทั้งหมด: ${state.products.length} รายการ`)}
+function clearAllData(){if(confirm('รีเซ็ตข้อมูลทั้งหมดและกลับไปข้อมูลตัวอย่างหรือไม่?')){localStorage.removeItem(KEY);location.reload()}}
+function scrollToTop(){window.scrollTo({top:0,behavior:'smooth'})}
+render();
+</script>
+</body>
+</html>
